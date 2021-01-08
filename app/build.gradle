@@ -4,10 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
+
 android {
     compileSdkVersion 30
 
     defaultConfig {
+//        applicationId "com.example.firstlibrary"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -38,58 +40,34 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
 
-//region Publish to jCenter
-def libGroupId = 'com.iifl'
-def libArtifactId = 'firstlibrary'
-def libVersion = '1.0.0'
-def libDesc = 'this is the demo library to know the process of jcenter.'
-def libLicenses = ['Apache-2.0']
-def libVCSUrl = 'https://github.com/sachinvarshney68/FirstLibrary.git'
+ext {
+    bintrayRepo = 'firstlibrary'
+    bintrayName = 'firstlibrary'
 
-// Generate Source Jar
-task sourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
+    publishedGroupId = 'com.iifl'
+    libraryName = 'firstlibrary'
+    artifact = 'firstlibrary'
+
+    libraryDescription = 'This is my first jcenter library'
+
+    siteUrl = 'https://github.com/sachinvarshney68/FirstLibrary'
+    gitUrl = 'https://github.com/sachinvarshney68/FirstLibrary.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'sachinvarshney68'
+    developerName = 'Sachin Varshney'
+    developerEmail = 'sachinvarshney68@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 }
 
-// Create the publication with the pom configuration
-publishing {
-    publications {
-        MyPublication(MavenPublication) {
-            groupId libGroupId
-            artifactId libArtifactId
-            version libVersion
-            artifact(sourceJar)
-            artifact("$buildDir/outputs/aar/$libArtifactId-release.aar")
-        }
-    }
-}
-
-// Bintray config
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    publications = ['MyPublication']
-    pkg {
-        repo = "maven"
-        name = "$libGroupId:$libArtifactId"
-        desc = libDesc
-        licenses = libLicenses
-        vcsUrl = libVCSUrl
-        version {
-            name = libVersion
-            vcsTag = libVersion
-            released = new Date()
-        }
-    }
-}
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
